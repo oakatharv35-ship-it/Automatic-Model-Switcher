@@ -109,7 +109,11 @@ def respond_user_using_local_model(
         chain_input["context"] = search_info[0]
 
     prompt = _select_prompt(use_memory, use_search, general=not is_specialized)
-    run = specialized_chain if is_specialized else default_chain
+    try:
+        run = specialized_chain if is_specialized else default_chain
+    except Exception as e:
+        print(f"Error selecting chain: {e}")
+        run = default_chain
     response = run(chain_input, model, prompt)
 
     if use_search:
